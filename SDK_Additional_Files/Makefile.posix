@@ -1,0 +1,3 @@
+GNU_INSTALL_ROOT := /usr
+GNU_VERSION := 5.2.1 # arm-none-eabi-g++ -dumpversion
+GNU_PREFIX := arm-none-eabi
