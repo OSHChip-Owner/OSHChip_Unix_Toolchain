@@ -1,9 +1,10 @@
 PROJECT_NAME := OSHChipBlinky
+MAIN_TARGET_NAME := oshchip_blinky
 
 export OUTPUT_FILENAME
 #MAKEFILE_NAME := $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 MAKEFILE_NAME := $(MAKEFILE_LIST)
-MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) ) 
+MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) )
 SDK_ROOT = ../../SDK
 TEMPLATE_PATH = $(SDK_ROOT)/components/toolchain/gcc
 ifeq ($(OS),Windows_NT)
@@ -17,7 +18,7 @@ RM := rm -rf
 
 #echo suspend
 ifeq ("$(VERBOSE)","1")
-NO_ECHO := 
+NO_ECHO :=
 else
 NO_ECHO := @
 endif
@@ -97,17 +98,17 @@ ASMFLAGS += -DS110
 ASMFLAGS += -DBLE_STACK_SUPPORT_REQD
 ASMFLAGS += -DBSP_DEFINES_ONLY
 #default target - first one defined
-default: clean oshchip_blinky
+default: clean $(MAIN_TARGET_NAME)
 
 #building all targets
 all: clean
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e cleanobj
-	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e oshchip_blinky
+	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e $(MAIN_TARGET_NAME)
 
 #target for printing all targets
 help:
 	@echo following targets are available:
-	@echo 	oshchip_blinky
+	@echo 	$(MAIN_TARGET_NAME)
 	@echo 	flash_softdevice
 
 
@@ -131,9 +132,9 @@ vpath %.s $(ASM_PATHS)
 
 OBJECTS = $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS)
 
-oshchip_blinky: OUTPUT_FILENAME := oshchip_blinky
-oshchip_blinky: LINKER_SCRIPT=../_common/basic_nrf51.ld
-oshchip_blinky: $(BUILD_DIRECTORIES) $(OBJECTS)
+$(MAIN_TARGET_NAME): OUTPUT_FILENAME := $(MAIN_TARGET_NAME)
+$(MAIN_TARGET_NAME): LINKER_SCRIPT=../_common/basic_nrf51.ld
+$(MAIN_TARGET_NAME): $(BUILD_DIRECTORIES) $(OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(CXX) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e finalize
@@ -182,7 +183,7 @@ genbin:
 	$(NO_ECHO)$(OBJCOPY) -O binary $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
 
 ## Create binary .hex file from the .out file
-genhex: 
+genhex:
 	@echo Preparing: $(OUTPUT_FILENAME).hex
 	$(NO_ECHO)$(OBJCOPY) -O ihex $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex
 
